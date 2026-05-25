@@ -1,9 +1,12 @@
 import pandas as pd
 
-# Load cleaned dataset
-df = pd.read_csv("output/cleaned_amazon.csv")
+# Load CLEANED dataset (IMPORTANT)
+df = pd.read_csv("../output/cleaned_amazon.csv")
 
-# Basic dataset info
+# Ensure numeric conversion (safety)
+df["rating"] = pd.to_numeric(df["rating"], errors="coerce")
+df["discount_amount"] = pd.to_numeric(df["discount_amount"], errors="coerce")
+
 print("Dataset Shape:")
 print(df.shape)
 
@@ -11,13 +14,13 @@ print(df.shape)
 print("\nAverage Product Rating:")
 print(df["rating"].mean())
 
-# Highest rated products
+# Top rated products
 print("\nTop 5 Highest Rated Products:")
 top_rated = df.sort_values(by="rating", ascending=False)
 
 print(top_rated[["product_name", "rating"]].head())
 
-# Products with highest discounts
+# Fix NaN issue for discount sorting
 print("\nTop 5 Highest Discount Products:")
 top_discount = df.sort_values(by="discount_amount", ascending=False)
 

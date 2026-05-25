@@ -1,30 +1,42 @@
 import pandas as pd
-import matplotlib.pyplot as plt
+import os
 
-# Load cleaned dataset
-df = pd.read_csv("output/cleaned_amazon.csv")
+# Load dataset
+df = pd.read_csv("../dataset/amazon.csv")
 
-# Top 10 highest discount products
-top_discount = df.sort_values(by="discount_amount", ascending=False).head(10)
+print("DATA LOADED SUCCESSFULLY")
 
-# Create bar chart
-plt.figure(figsize=(10,6))
+# Clean price columns (VERY IMPORTANT)
+df["actual_price"] = (
+    df["actual_price"]
+    .astype(str)
+    .str.replace("₹", "", regex=False)
+    .str.replace(",", "", regex=False)
+)
 
-plt.bar(top_discount["product_name"], top_discount["discount_amount"])
+df["discounted_price"] = (
+    df["discounted_price"]
+    .astype(str)
+    .str.replace("₹", "", regex=False)
+    .str.replace(",", "", regex=False)
+)
 
-# Labels
-plt.xlabel("Product Name")
-plt.ylabel("Discount Amount")
-plt.title("Top 10 Highest Discount Products")
+# Convert to numeric
+df["actual_price"] = pd.to_numeric(df["actual_price"], errors="coerce")
+df["discounted_price"] = pd.to_numeric(df["discounted_price"], errors="coerce")
 
-# Rotate product names
-plt.xticks(rotation=90)
+# Create discount column
+df["discount_amount"] = df["actual_price"] - df["discounted_price"]
 
-# Adjust layout
-plt.tight_layout()
+# Preview
+print("\nFIRST 5 ROWS:")
+print(df[["actual_price", "discounted_price", "discount_amount"]].head())
 
-# Save graph
-plt.savefig("output/top_discount_products.png")
+# Create output folder safely
+os.makedirs("../output", exist_ok=True)
 
-# Show graph
-plt.show()
+# Save file
+output_path = "../output/cleaned_amazon.csv"
+df.to_csv(output_path, index=False)
+
+print("\nCLEANED FILE SAVED AT:", output_path)

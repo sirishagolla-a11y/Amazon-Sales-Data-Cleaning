@@ -1,38 +1,43 @@
 import pandas as pd
+import os
 
 # Load dataset
-df = pd.read_csv("dataset/amazon.csv")
+df = pd.read_csv("../dataset/amazon.csv")
 
-# Remove missing values
-df = df.dropna()
+print("DATA LOADED SUCCESSFULLY")
+print("\nBEFORE CLEANING:")
+print(df[["actual_price", "discounted_price"]].head())
 
-# Clean discounted_price column
-df["discounted_price"] = df["discounted_price"].str.replace("₹", "")
-df["discounted_price"] = df["discounted_price"].str.replace(",", "")
-df["discounted_price"] = df["discounted_price"].astype(float)
+# CLEAN PRICES (IMPORTANT FIX)
+df["actual_price"] = (
+    df["actual_price"].astype(str)
+    .str.replace("₹", "", regex=False)
+    .str.replace(",", "", regex=False)
+)
 
-# Clean actual_price column
-df["actual_price"] = df["actual_price"].str.replace("₹", "")
-df["actual_price"] = df["actual_price"].str.replace(",", "")
-df["actual_price"] = df["actual_price"].astype(float)
-# Clean discount_percentage column
-df["discount_percentage"] = df["discount_percentage"].str.replace("%", "")
-df["discount_percentage"] = df["discount_percentage"].astype(float)
+df["discounted_price"] = (
+    df["discounted_price"].astype(str)
+    .str.replace("₹", "", regex=False)
+    .str.replace(",", "", regex=False)
+)
 
-# Convert rating column to float
-df["rating"] = pd.to_numeric(df["rating"], errors="coerce")
+# Convert to numeric
+df["actual_price"] = pd.to_numeric(df["actual_price"], errors="coerce")
+df["discounted_price"] = pd.to_numeric(df["discounted_price"], errors="coerce")
 
-# Check data types again
+# Drop bad rows (VERY IMPORTANT to remove NaN issue)
+df = df.dropna(subset=["actual_price", "discounted_price"])
 
-
-# Check data types
-print(df.dtypes)
-# Create new column
+# Create discount column
 df["discount_amount"] = df["actual_price"] - df["discounted_price"]
 
-# Show first 5 rows
+print("\nAFTER CLEANING:")
 print(df[["actual_price", "discounted_price", "discount_amount"]].head())
-# Save cleaned dataset
-df.to_csv("output/cleaned_amazon.csv", index=False)
 
-print("\nCleaned dataset saved successfully!")
+# Create output folder
+os.makedirs("../output", exist_ok=True)
+
+# Save file
+df.to_csv("../output/cleaned_amazon.csv", index=False)
+
+print("\nCLEANED FILE SAVED SUCCESSFULLY")

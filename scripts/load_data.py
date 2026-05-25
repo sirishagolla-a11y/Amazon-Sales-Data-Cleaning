@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv("dataset/amazon.csv")
+df = pd.read_csv("../dataset/amazon.csv")
 
 print("First 5 Rows:")
 print(df.head())
