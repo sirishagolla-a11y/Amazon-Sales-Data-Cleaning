@@ -54,3 +54,32 @@ output/cleaned_amazon.csv
 - Feature engineering
 - Data transformation using Pandas
 - Professional project structuring
+
+---
+
+## Exploratory Data Analysis (EDA)
+
+The following analysis was performed on the cleaned dataset:
+
+- Average product rating analysis
+- Highest rated products identification
+- Highest discount products analysis
+
+---
+
+## Data Visualization
+
+A bar chart was created to visualize the Top 10 Highest Discount Products.
+
+Generated visualization:
+
+- `top_discount_products.png`
+
+---
+
+## Key Insights
+
+- Average product rating is around 4.09
+- Electronics and appliances received high discounts
+- Some premium products had discounts above ₹60,000
+- Highly discounted products tend to attract more reviews
